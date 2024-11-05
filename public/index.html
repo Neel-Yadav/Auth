@@ -1,1 +1,36 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auth Demo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Authentication System</h1>
+
+  <div id="auth">
+    <h2>Register</h2>
+    <input type="text" id="register-firstName" placeholder="First Name">
+    <input type="text" id="register-lastName" placeholder="Last Name">
+    <input type="date" id="register-dob" placeholder="Date of Birth">
+    <input type="text" id="register-username" placeholder="Username (used as ID)">
+    <input type="password" id="register-password" placeholder="Password">
+    <button onclick="register()">Register</button>
+
+    <h2>Login</h2>
+    <input type="text" id="login-userId" placeholder="Username (used as ID)">
+    <input type="password" id="login-password" placeholder="Password">
+    <button onclick="login()">Login</button>
+  </div>
+
+  <div id="protected" style="display:none;">
+    <h2>Protected Route</h2>
+    <button onclick="accessProtected()">Access Protected Route</button>
+    <p id="protected-content"></p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
