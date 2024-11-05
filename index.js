@@ -46,7 +46,7 @@ app.post('/register', async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const userId = `${username}`; // Create a user ID by appending '@cyro.com'
+    const userId = `${username}@cyro.com`; // Create a user ID by appending '@cyro.com'
 
     db.users[username] = {
         userId, // Store userId as the username with '@cyro.com'
@@ -109,6 +109,18 @@ app.post('/refresh-token', (req, res) => {
         const newAccessToken = jwt.sign({ userId: user.userId }, SECRET_KEY, { expiresIn: TOKEN_EXPIRATION });
         res.json({ accessToken: newAccessToken });
     });
+});
+
+// List all users endpoint
+app.get('/users', authenticateToken, (req, res) => {
+    const db = readDB();
+    const usersArray = Object.values(db.users).map(user => ({
+        userId: user.userId,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        dob: user.dob
+    }));
+    res.json(usersArray);
 });
 
 // Start the server
