@@ -2,7 +2,7 @@ let accessToken = null;
 let refreshToken = null;
 
 // Check for existing tokens on page load
-window.onload = function() {
+window.onload = function () {
     accessToken = localStorage.getItem('accessToken');
     refreshToken = localStorage.getItem('refreshToken');
 
@@ -12,23 +12,6 @@ window.onload = function() {
         accessProtected(); // Automatically access the protected route
     }
 };
-
-// Toggle between Register and Login forms
-function toggleForms() {
-    const authDiv = document.getElementById('auth');
-    const loginFormDiv = document.getElementById('login-form');
-    const protectedDiv = document.getElementById('protected');
-
-    if (authDiv.style.display === 'none') {
-        authDiv.style.display = 'block';
-        loginFormDiv.style.display = 'none';
-        protectedDiv.style.display = 'none';
-    } else {
-        authDiv.style.display = 'none';
-        loginFormDiv.style.display = 'block';
-        protectedDiv.style.display = 'none';
-    }
-}
 
 // Register function
 async function register() {
@@ -47,9 +30,8 @@ async function register() {
     const data = await response.json();
     if (response.ok) {
         alert(`Registration successful! Your User ID is: ${data.userId}`);
-        toggleForms(); // Show login form after registration
     } else {
-        showMessage(`Registration failed: ${data.message}`);
+        alert(`Registration failed: ${data.message}`);
     }
 }
 
@@ -74,11 +56,11 @@ async function login() {
         localStorage.setItem('refreshToken', refreshToken);
 
         alert("Login successful!");
-        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('auth').style.display = 'none';
         document.getElementById('protected').style.display = 'block';
         accessProtected(); // Access protected content after logging in
     } else {
-        showMessage(`Login failed: ${data.message}`);
+        alert(`Login failed: ${data.message}`);
     }
 }
 
@@ -94,13 +76,13 @@ async function accessProtected() {
         document.getElementById('protected-content').innerText = `Hello ${data.user.firstName} ${data.user.lastName}. Your date of birth is ${data.user.dob} and your User ID is ${data.user.userId}.`;
     } else if (response.status === 403) {
         alert("Access denied. Token may be expired. Attempting to refresh token...");
-        await refreshAccessToken();
+        refreshAccessToken();
     } else {
-        showMessage("Failed to access protected route.");
+        alert("Failed to access protected route.");
     }
 }
 
-// Refresh access token using refresh token
+// Function to refresh the access token using the refresh token
 async function refreshAccessToken() {
     const response = await fetch('/refresh-token', {
         method: 'POST',
@@ -108,16 +90,15 @@ async function refreshAccessToken() {
         body: JSON.stringify({ refreshToken })
     });
 
+    const data = await response.json();
     if (response.ok) {
-        const data = await response.json();
-        accessToken = data.accessToken;  // Update access token
-        localStorage.setItem('accessToken', accessToken); // Store new access token
-        accessProtected();  // Retry fetching protected content with new token
+        accessToken = data.accessToken;
+        localStorage.setItem('accessToken', accessToken); // Store new access token in localStorage
+        alert("Token refreshed successfully.");
+        accessProtected(); // Retry accessing the protected route
     } else {
-        alert("Failed to refresh token. Please log in again.");
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        toggleForms(); // Show login form after token refresh failure
+        alert("Refresh token is invalid or expired. Please log in again.");
+        logout(); // Log the user out if refresh token fails
     }
 }
 
@@ -129,12 +110,31 @@ async function listUsers() {
     });
 
     if (response.ok) {
-        const data = await response.json();
-        const userList = document.getElementById('user-list');
-        userList.innerHTML = '<ul>' + data.users.map(user => `<li>${user.firstName} ${user.lastName} (User ID: ${user.userId})</li>`).join('') + '</ul>';
+        const users = await response.json();
+        displayUsers(users);
     } else {
-        showMessage("Failed to fetch users.");
+        alert("Failed to retrieve user list.");
     }
+}
+
+// Function to display users
+function displayUsers(users) {
+    const userListDiv = document.getElementById('user-list');
+    userListDiv.innerHTML = ''; // Clear previous content
+
+    if (users.length === 0) {
+        userListDiv.innerHTML = '<p>No users found.</p>';
+        return;
+    }
+
+    const list = document.createElement('ul');
+    users.forEach(user => {
+        const listItem = document.createElement('li');
+        listItem.innerText = `User ID: ${user.userId}, Name: ${user.firstName} ${user.lastName}, DOB: ${user.dob}`;
+        list.appendChild(listItem);
+    });
+
+    userListDiv.appendChild(list);
 }
 
 // Logout function
@@ -143,12 +143,5 @@ function logout() {
     localStorage.removeItem('refreshToken');
     document.getElementById('auth').style.display = 'block';
     document.getElementById('protected').style.display = 'none';
-}
-
-// Show error message
-function showMessage(message) {
-    const messageDiv = document.getElementById('message');
-    const messageText = document.getElementById('message-text');
-    messageText.innerText = message;
-    messageDiv.style.display = 'block';
+    alert("Logged out successfully.");
 }
