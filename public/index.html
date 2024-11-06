@@ -3,88 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Authentication System</title>
+    <title>User Authentication</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f7f9fc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
+
         .container {
-            width: 50%;
-            margin: 0 auto;
+            max-width: 450px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 8px;
             padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f9f9f9;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-        .hidden {
-            display: none;
+
+        h1, h3 {
+            text-align: center;
+            color: #333;
         }
-        label {
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
             display: block;
             margin-bottom: 5px;
+            font-weight: bold;
         }
-        input[type="text"], input[type="password"], input[type="date"] {
+
+        .form-group input {
             width: 100%;
-            padding: 8px;
-            margin: 5px 0 15px;
+            padding: 10px;
             border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 5px;
+            font-size: 14px;
         }
-        button {
-            padding: 10px 15px;
-            background-color: #4CAF50;
+
+        .form-group button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .form-group button:hover {
+            background-color: #0056b3;
+        }
+
+        .message {
+            text-align: center;
+            color: green;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        #protected {
+            display: none;
+            margin-top: 20px;
+        }
+
+        #user-list {
+            margin-top: 20px;
+        }
+
+        #user-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #user-list li {
+            padding: 10px;
+            background-color: #f1f1f1;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .actions {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .actions button {
+            padding: 10px 20px;
+            background-color: #28a745;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 14px;
         }
-        button:hover {
-            background-color: #45a049;
-        }
-        .message {
-            color: red;
+
+        .actions button:hover {
+            background-color: #218838;
         }
     </style>
 </head>
 <body>
+    <div id="auth" class="container">
+        <h1>User Authentication</h1>
 
-<div class="container">
-    <div id="auth">
-        <h2>Login</h2>
-        <label for="login-userId">User ID</label>
-        <input type="text" id="login-userId" placeholder="Enter your user ID" required>
-        <label for="login-password">Password</label>
-        <input type="password" id="login-password" placeholder="Enter your password" required>
-        <button onclick="login()">Login</button>
-        <p class="message" id="login-message"></p>
+        <!-- Registration Form -->
+        <div id="register-form">
+            <h3>Register</h3>
+            <div class="form-group">
+                <label for="register-firstName">First Name</label>
+                <input type="text" id="register-firstName" required>
+            </div>
+            <div class="form-group">
+                <label for="register-lastName">Last Name</label>
+                <input type="text" id="register-lastName" required>
+            </div>
+            <div class="form-group">
+                <label for="register-dob">Date of Birth</label>
+                <input type="date" id="register-dob" required>
+            </div>
+            <div class="form-group">
+                <label for="register-username">Username</label>
+                <input type="text" id="register-username" required>
+            </div>
+            <div class="form-group">
+                <label for="register-password">Password</label>
+                <input type="password" id="register-password" required>
+            </div>
+            <div class="form-group">
+                <button onclick="register()">Register</button>
+            </div>
+            <p id="register-message" class="message"></p>
+        </div>
 
-        <h2>Register</h2>
-        <label for="register-firstName">First Name</label>
-        <input type="text" id="register-firstName" required>
-        <label for="register-lastName">Last Name</label>
-        <input type="text" id="register-lastName" required>
-        <label for="register-dob">Date of Birth</label>
-        <input type="date" id="register-dob" required>
-        <label for="register-username">Username</label>
-        <input type="text" id="register-username" required>
-        <label for="register-password">Password</label>
-        <input type="password" id="register-password" required>
-        <button onclick="register()">Register</button>
-        <p class="message" id="register-message"></p>
+        <!-- Login Form -->
+        <div id="login-form">
+            <h3>Login</h3>
+            <div class="form-group">
+                <label for="login-userId">User ID</label>
+                <input type="text" id="login-userId" required>
+            </div>
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" required>
+            </div>
+            <div class="form-group">
+                <button onclick="login()">Login</button>
+            </div>
+            <p id="login-message" class="message"></p>
+        </div>
     </div>
 
-    <div id="protected" class="hidden">
-        <h2>Protected Route</h2>
+    <!-- Protected content section -->
+    <div id="protected" class="container">
+        <h1>Welcome to the Protected Area</h1>
         <div id="protected-content"></div>
-        <button onclick="logout()">Logout</button>
+        
+        <div class="actions">
+            <button onclick="listUsers()">Show All Users</button>
+        </div>
+
+        <div id="user-list">
+            <h3>All Registered Users</h3>
+            <div id="users-container"></div>
+        </div>
+
+        <div class="actions">
+            <button onclick="logout()">Logout</button>
+        </div>
     </div>
 
-    <div id="user-list" class="hidden">
-        <h2>Users</h2>
-        <div id="users-container"></div>
-    </div>
-</div>
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
