@@ -1,37 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auth Demo</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-top: 50px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        input[type="text"], input[type="password"], input[type="date"], input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-container label {
+            margin-bottom: 5px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #protected-content {
+            font-size: 16px;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e6f7ff;
+            border-radius: 8px;
+        }
+
+        #user-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #user-list li {
+            padding: 8px;
+            background-color: #f9f9f9;
+            margin-bottom: 5px;
+            border-radius: 4px;
+        }
+
+        #auth {
+            display: block;
+        }
+
+        #protected {
+            display: none;
+        }
+
+        .message {
+            color: red;
+            font-size: 14px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-  <h1>Authentication System</h1>
 
-  <div id="auth">
+<div class="container" id="auth">
     <h2>Register</h2>
-    <input type="text" id="register-firstName" placeholder="First Name">
-    <input type="text" id="register-lastName" placeholder="Last Name">
-    <input type="date" id="register-dob" placeholder="Date of Birth">
-    <input type="text" id="register-username" placeholder="Username (used as ID)">
-    <input type="password" id="register-password" placeholder="Password">
-    <button onclick="register()">Register</button>
+    <div class="form-container">
+        <label for="register-firstName">First Name</label>
+        <input type="text" id="register-firstName" placeholder="Enter first name">
+        <label for="register-lastName">Last Name</label>
+        <input type="text" id="register-lastName" placeholder="Enter last name">
+        <label for="register-dob">Date of Birth</label>
+        <input type="date" id="register-dob">
+        <label for="register-username">Username</label>
+        <input type="text" id="register-username" placeholder="Enter username">
+        <label for="register-password">Password</label>
+        <input type="password" id="register-password" placeholder="Enter password">
+        <button onclick="register()">Register</button>
+    </div>
+    <p>Already have an account? <a href="javascript:void(0);" onclick="toggleForms()">Login</a></p>
+</div>
 
+<div class="container hidden" id="login-form">
     <h2>Login</h2>
-    <input type="text" id="login-userId" placeholder="Username (used as ID)">
-    <input type="password" id="login-password" placeholder="Password">
-    <button onclick="login()">Login</button>
-  </div>
+    <div class="form-container">
+        <label for="login-userId">User ID</label>
+        <input type="text" id="login-userId" placeholder="Enter user ID">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" placeholder="Enter password">
+        <button onclick="login()">Login</button>
+    </div>
+    <p>Don't have an account? <a href="javascript:void(0);" onclick="toggleForms()">Register</a></p>
+</div>
 
-  <div id="protected" style="display:none;">
-    <h2>Protected Route</h2>
-    <button onclick="accessProtected()">Access Protected Route</button>
-    <p id="protected-content"></p>
-    <button onclick="listUsers()">List All Users</button>
-    <div id="user-list" style="margin-top: 20px;"></div>
-  </div>
+<div class="container hidden" id="protected">
+    <div id="protected-content"></div>
+    <button onclick="listUsers()">List Users</button>
+    <div id="user-list"></div>
+    <button onclick="logout()">Logout</button>
+</div>
 
-  <script src="script.js"></script>
+<div class="container hidden" id="message">
+    <div class="message" id="message-text"></div>
+</div>
+
+<!-- Link to the external script.js file -->
+<script src="script.js"></script>
 </body>
 </html>
