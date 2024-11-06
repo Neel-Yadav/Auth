@@ -3,145 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Authentication App</title>
+    <title>Authentication System</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f2f5;
         }
-
         .container {
-            width: 100%;
-            max-width: 600px;
+            width: 50%;
             margin: 0 auto;
             padding: 20px;
-            background-color: #ffffff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            margin-top: 50px;
-        }
-
-        h2 {
-            text-align: center;
-        }
-
-        input[type="text"], input[type="password"], input[type="date"], input[type="email"] {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
             border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
         }
-
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        .form-container {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-container label {
-            margin-bottom: 5px;
-        }
-
         .hidden {
             display: none;
         }
-
-        #protected-content {
-            font-size: 16px;
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #e6f7ff;
-            border-radius: 8px;
-        }
-
-        #user-list ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        #user-list li {
-            padding: 8px;
-            background-color: #f9f9f9;
+        label {
+            display: block;
             margin-bottom: 5px;
+        }
+        input[type="text"], input[type="password"], input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 15px;
+            border: 1px solid #ccc;
             border-radius: 4px;
         }
-
-        #auth {
-            display: block;
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
-
-        #protected {
-            display: none;
+        button:hover {
+            background-color: #45a049;
         }
-
         .message {
             color: red;
-            font-size: 14px;
-            text-align: center;
         }
     </style>
 </head>
 <body>
 
-<div class="container" id="auth">
-    <h2>Register</h2>
-    <div class="form-container">
-        <label for="register-firstName">First Name</label>
-        <input type="text" id="register-firstName" placeholder="Enter first name">
-        <label for="register-lastName">Last Name</label>
-        <input type="text" id="register-lastName" placeholder="Enter last name">
-        <label for="register-dob">Date of Birth</label>
-        <input type="date" id="register-dob">
-        <label for="register-username">Username</label>
-        <input type="text" id="register-username" placeholder="Enter username">
-        <label for="register-password">Password</label>
-        <input type="password" id="register-password" placeholder="Enter password">
-        <button onclick="register()">Register</button>
-    </div>
-    <p>Already have an account? <a href="javascript:void(0);" onclick="toggleForms()">Login</a></p>
-</div>
-
-<div class="container hidden" id="login-form">
-    <h2>Login</h2>
-    <div class="form-container">
+<div class="container">
+    <div id="auth">
+        <h2>Login</h2>
         <label for="login-userId">User ID</label>
-        <input type="text" id="login-userId" placeholder="Enter user ID">
+        <input type="text" id="login-userId" placeholder="Enter your user ID" required>
         <label for="login-password">Password</label>
-        <input type="password" id="login-password" placeholder="Enter password">
+        <input type="password" id="login-password" placeholder="Enter your password" required>
         <button onclick="login()">Login</button>
+        <p class="message" id="login-message"></p>
+
+        <h2>Register</h2>
+        <label for="register-firstName">First Name</label>
+        <input type="text" id="register-firstName" required>
+        <label for="register-lastName">Last Name</label>
+        <input type="text" id="register-lastName" required>
+        <label for="register-dob">Date of Birth</label>
+        <input type="date" id="register-dob" required>
+        <label for="register-username">Username</label>
+        <input type="text" id="register-username" required>
+        <label for="register-password">Password</label>
+        <input type="password" id="register-password" required>
+        <button onclick="register()">Register</button>
+        <p class="message" id="register-message"></p>
     </div>
-    <p>Don't have an account? <a href="javascript:void(0);" onclick="toggleForms()">Register</a></p>
+
+    <div id="protected" class="hidden">
+        <h2>Protected Route</h2>
+        <div id="protected-content"></div>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <div id="user-list" class="hidden">
+        <h2>Users</h2>
+        <div id="users-container"></div>
+    </div>
 </div>
 
-<div class="container hidden" id="protected">
-    <div id="protected-content"></div>
-    <button onclick="listUsers()">List Users</button>
-    <div id="user-list"></div>
-    <button onclick="logout()">Logout</button>
-</div>
-
-<div class="container hidden" id="message">
-    <div class="message" id="message-text"></div>
-</div>
-
-<!-- Link to the external script.js file -->
 <script src="script.js"></script>
 </body>
 </html>
