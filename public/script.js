@@ -100,7 +100,7 @@ async function handleTokenExpiry() {
     }
 }
 
-// Fetch all users
+// Fetch all users and display them
 async function fetchUsers() {
     const response = await fetch('/users', {
         method: 'GET',
@@ -109,14 +109,34 @@ async function fetchUsers() {
 
     const data = await response.json();
     if (response.ok) {
-        const usersContainer = document.getElementById('users-container');
-        usersContainer.innerHTML = data.map(user => `
-            <p><strong>User ID:</strong> ${user.userId} | <strong>Name:</strong> ${user.firstName} ${user.lastName}</p>
-        `).join('');
-        document.getElementById('user-list').style.display = 'block';
+        displayUsers(data);
     } else {
         handleTokenExpiry();
     }
+}
+
+// Function to display all users with details
+function displayUsers(users) {
+    const userListDiv = document.getElementById('user-list');
+    userListDiv.innerHTML = ''; // Clear previous content
+
+    if (users.length === 0) {
+        userListDiv.innerHTML = '<p>No users found.</p>';
+        return;
+    }
+
+    const list = document.createElement('ul');
+    users.forEach(user => {
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `
+            <p><strong>User ID:</strong> ${user.userId}</p>
+            <p><strong>Name:</strong> ${user.firstName} ${user.lastName}</p>
+            <p><strong>Date of Birth:</strong> ${user.dob}</p>
+        `;
+        list.appendChild(listItem);
+    });
+
+    userListDiv.appendChild(list);
 }
 
 // Logout function
