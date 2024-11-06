@@ -10,7 +10,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Configuration values
 const PORT = 3000;
-const SECRET_KEY = 'fodittaurxjirsrxii';  // Replace with a secure key
+const SECRET_KEY = 'your_jwt_secret_key';  // Replace with a secure key
 const TOKEN_EXPIRATION = '1h';
 const REFRESH_TOKEN_EXPIRATION = '7d';
 
