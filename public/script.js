@@ -13,6 +13,23 @@ window.onload = function() {
     }
 };
 
+// Toggle between Register and Login forms
+function toggleForms() {
+    const authDiv = document.getElementById('auth');
+    const loginFormDiv = document.getElementById('login-form');
+    const protectedDiv = document.getElementById('protected');
+
+    if (authDiv.style.display === 'none') {
+        authDiv.style.display = 'block';
+        loginFormDiv.style.display = 'none';
+        protectedDiv.style.display = 'none';
+    } else {
+        authDiv.style.display = 'none';
+        loginFormDiv.style.display = 'block';
+        protectedDiv.style.display = 'none';
+    }
+}
+
 // Register function
 async function register() {
     const firstName = document.getElementById('register-firstName').value;
@@ -30,8 +47,9 @@ async function register() {
     const data = await response.json();
     if (response.ok) {
         alert(`Registration successful! Your User ID is: ${data.userId}`);
+        toggleForms(); // Show login form after registration
     } else {
-        alert(`Registration failed: ${data.message}`);
+        showMessage(`Registration failed: ${data.message}`);
     }
 }
 
@@ -56,11 +74,11 @@ async function login() {
         localStorage.setItem('refreshToken', refreshToken);
 
         alert("Login successful!");
-        document.getElementById('auth').style.display = 'none';
+        document.getElementById('login-form').style.display = 'none';
         document.getElementById('protected').style.display = 'block';
         accessProtected(); // Access protected content after logging in
     } else {
-        alert(`Login failed: ${data.message}`);
+        showMessage(`Login failed: ${data.message}`);
     }
 }
 
@@ -78,7 +96,7 @@ async function accessProtected() {
         alert("Access denied. Token may be expired. Attempting to refresh token...");
         await refreshAccessToken();
     } else {
-        alert("Failed to access protected route.");
+        showMessage("Failed to access protected route.");
     }
 }
 
@@ -99,8 +117,7 @@ async function refreshAccessToken() {
         alert("Failed to refresh token. Please log in again.");
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-        document.getElementById('auth').style.display = 'block';
-        document.getElementById('protected').style.display = 'none';
+        toggleForms(); // Show login form after token refresh failure
     }
 }
 
@@ -112,31 +129,12 @@ async function listUsers() {
     });
 
     if (response.ok) {
-        const users = await response.json();
-        displayUsers(users);
+        const data = await response.json();
+        const userList = document.getElementById('user-list');
+        userList.innerHTML = '<ul>' + data.users.map(user => `<li>${user.firstName} ${user.lastName} (User ID: ${user.userId})</li>`).join('') + '</ul>';
     } else {
-        alert("Failed to retrieve user list.");
+        showMessage("Failed to fetch users.");
     }
-}
-
-// Function to display users
-function displayUsers(users) {
-    const userListDiv = document.getElementById('user-list');
-    userListDiv.innerHTML = ''; // Clear previous content
-
-    if (users.length === 0) {
-        userListDiv.innerHTML = '<p>No users found.</p>';
-        return;
-    }
-
-    const list = document.createElement('ul');
-    users.forEach(user => {
-        const listItem = document.createElement('li');
-        listItem.innerText = `User ID: ${user.userId}, Name: ${user.firstName} ${user.lastName}, DOB: ${user.dob}`;
-        list.appendChild(listItem);
-    });
-
-    userListDiv.appendChild(list);
 }
 
 // Logout function
@@ -145,5 +143,12 @@ function logout() {
     localStorage.removeItem('refreshToken');
     document.getElementById('auth').style.display = 'block';
     document.getElementById('protected').style.display = 'none';
-    alert("Logged out successfully");
+}
+
+// Show error message
+function showMessage(message) {
+    const messageDiv = document.getElementById('message');
+    const messageText = document.getElementById('message-text');
+    messageText.innerText = message;
+    messageDiv.style.display = 'block';
 }
