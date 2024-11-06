@@ -75,11 +75,32 @@ async function accessProtected() {
         const data = await response.json();
         document.getElementById('protected-content').innerText = `Hello ${data.user.firstName} ${data.user.lastName}. Your date of birth is ${data.user.dob} and your User ID is ${data.user.userId}.`;
     } else if (response.status === 403) {
-        alert("Access denied. Token may be expired. Please login again.");
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
+        alert("Access denied. Token may be expired. Attempting to refresh token...");
+        await refreshAccessToken();
     } else {
         alert("Failed to access protected route.");
+    }
+}
+
+// Refresh access token using refresh token
+async function refreshAccessToken() {
+    const response = await fetch('/refresh-token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken })
+    });
+
+    if (response.ok) {
+        const data = await response.json();
+        accessToken = data.accessToken;  // Update access token
+        localStorage.setItem('accessToken', accessToken); // Store new access token
+        accessProtected();  // Retry fetching protected content with new token
+    } else {
+        alert("Failed to refresh token. Please log in again.");
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        document.getElementById('auth').style.display = 'block';
+        document.getElementById('protected').style.display = 'none';
     }
 }
 
@@ -116,4 +137,13 @@ function displayUsers(users) {
     });
 
     userListDiv.appendChild(list);
-      }
+}
+
+// Logout function
+function logout() {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    document.getElementById('auth').style.display = 'block';
+    document.getElementById('protected').style.display = 'none';
+    alert("Logged out successfully");
+}
